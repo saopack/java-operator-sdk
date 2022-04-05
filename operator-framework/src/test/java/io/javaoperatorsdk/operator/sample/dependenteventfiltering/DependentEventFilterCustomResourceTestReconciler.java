@@ -1,4 +1,4 @@
-package io.javaoperatorsdk.operator.sample.operationeventfiltering;
+package io.javaoperatorsdk.operator.sample.dependenteventfiltering;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,16 +11,16 @@ import io.javaoperatorsdk.operator.support.TestExecutionInfoProvider;
     dependents = {
         @Dependent(type = ConfigMapDependentResource.class),
     })
-public class OperationEventFilterCustomResourceTestReconciler
-    implements Reconciler<OperationEventFilterCustomResource>,
+public class DependentEventFilterCustomResourceTestReconciler
+    implements Reconciler<DependentEventFilterCustomResource>,
     TestExecutionInfoProvider {
 
   private final AtomicInteger numberOfExecutions = new AtomicInteger(0);
 
   @Override
-  public UpdateControl<OperationEventFilterCustomResource> reconcile(
-      OperationEventFilterCustomResource resource,
-      Context<OperationEventFilterCustomResource> context) {
+  public UpdateControl<DependentEventFilterCustomResource> reconcile(
+      DependentEventFilterCustomResource resource,
+      Context<DependentEventFilterCustomResource> context) {
     numberOfExecutions.addAndGet(1);
     return UpdateControl.noUpdate();
   }

@@ -8,15 +8,15 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.javaoperatorsdk.operator.junit.OperatorExtension;
-import io.javaoperatorsdk.operator.sample.operationeventfiltering.ConfigMapDependentResource;
-import io.javaoperatorsdk.operator.sample.operationeventfiltering.OperationEventFilterCustomResource;
-import io.javaoperatorsdk.operator.sample.operationeventfiltering.OperationEventFilterCustomResourceSpec;
-import io.javaoperatorsdk.operator.sample.operationeventfiltering.OperationEventFilterCustomResourceTestReconciler;
+import io.javaoperatorsdk.operator.sample.dependenteventfiltering.ConfigMapDependentResource;
+import io.javaoperatorsdk.operator.sample.dependenteventfiltering.DependentEventFilterCustomResource;
+import io.javaoperatorsdk.operator.sample.dependenteventfiltering.DependentEventFilterCustomResourceSpec;
+import io.javaoperatorsdk.operator.sample.dependenteventfiltering.DependentEventFilterCustomResourceTestReconciler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-class OperationEventFilterIT {
+class DependentEventFilterIT {
 
   public static final String TEST = "test";
   public static final String SPEC_VAL_1 = "val1";
@@ -25,37 +25,37 @@ class OperationEventFilterIT {
   @RegisterExtension
   OperatorExtension operator =
       OperatorExtension.builder()
-          .withReconciler(new OperationEventFilterCustomResourceTestReconciler())
+          .withReconciler(new DependentEventFilterCustomResourceTestReconciler())
           .build();
 
   @Test
   void reconcileNotTriggeredWithDependentResourceCreateOrUpdate() {
-    var resource = operator.create(OperationEventFilterCustomResource.class, createTestResource());
+    var resource = operator.create(DependentEventFilterCustomResource.class, createTestResource());
 
     await().pollDelay(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(3))
         .until(
-            () -> ((OperationEventFilterCustomResourceTestReconciler) operator.getFirstReconciler())
+            () -> ((DependentEventFilterCustomResourceTestReconciler) operator.getFirstReconciler())
                 .getNumberOfExecutions() == 1);
     assertThat(operator.get(ConfigMap.class, TEST).getData())
         .containsEntry(ConfigMapDependentResource.KEY, SPEC_VAL_1);
 
     resource.getSpec().setValue(SPEC_VAL_2);
-    operator.replace(OperationEventFilterCustomResource.class, resource);
+    operator.replace(DependentEventFilterCustomResource.class, resource);
 
     await().pollDelay(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(3))
         .until(
-            () -> ((OperationEventFilterCustomResourceTestReconciler) operator.getFirstReconciler())
+            () -> ((DependentEventFilterCustomResourceTestReconciler) operator.getFirstReconciler())
                 .getNumberOfExecutions() == 2);
     assertThat(operator.get(ConfigMap.class, TEST).getData())
         .containsEntry(ConfigMapDependentResource.KEY, SPEC_VAL_2);
   }
 
 
-  private OperationEventFilterCustomResource createTestResource() {
-    OperationEventFilterCustomResource cr = new OperationEventFilterCustomResource();
+  private DependentEventFilterCustomResource createTestResource() {
+    DependentEventFilterCustomResource cr = new DependentEventFilterCustomResource();
     cr.setMetadata(new ObjectMeta());
     cr.getMetadata().setName(TEST);
-    cr.setSpec(new OperationEventFilterCustomResourceSpec());
+    cr.setSpec(new DependentEventFilterCustomResourceSpec());
     cr.getSpec().setValue(SPEC_VAL_1);
     return cr;
   }

@@ -1,4 +1,4 @@
-package io.javaoperatorsdk.operator.sample.operationeventfiltering;
+package io.javaoperatorsdk.operator.sample.dependenteventfiltering;
 
 import java.util.HashMap;
 
@@ -8,7 +8,7 @@ import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetesDependentResource;
 
 public class ConfigMapDependentResource extends
-    CRUKubernetesDependentResource<ConfigMap, OperationEventFilterCustomResource> {
+    CRUKubernetesDependentResource<ConfigMap, DependentEventFilterCustomResource> {
 
   public static final String KEY = "key1";
 
@@ -17,8 +17,8 @@ public class ConfigMapDependentResource extends
   }
 
   @Override
-  protected ConfigMap desired(OperationEventFilterCustomResource primary,
-      Context<OperationEventFilterCustomResource> context) {
+  protected ConfigMap desired(DependentEventFilterCustomResource primary,
+                              Context<DependentEventFilterCustomResource> context) {
 
     ConfigMap configMap = new ConfigMap();
     configMap.setMetadata(new ObjectMeta());
