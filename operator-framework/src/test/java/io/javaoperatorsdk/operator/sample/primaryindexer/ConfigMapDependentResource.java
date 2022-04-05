@@ -21,7 +21,6 @@ public class ConfigMapDependentResource extends
   @Override
   public ReconcileResult<ConfigMap> reconcile(OrderedManagedDependentCustomResource primary,
       Context<OrderedManagedDependentCustomResource> context) {
-    OrderedManagedDependentTestReconciler.dependentExecution.add(this.getClass());
     return super.reconcile(primary, context);
   }
 
